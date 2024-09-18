@@ -1,10 +1,9 @@
 resource "aws_lambda_layer_version" "node_modules_layer" {
   layer_name          = "node_modules_layer"
-  filename            = "./node_modules_layer.zip"
+  filename            = "${path.module}/../node_modules_layer.zip"
   compatible_runtimes = ["nodejs20.x"]
-  source_code_hash    = filebase64sha256("./node_modules_layer.zip")
+  source_code_hash    = filebase64sha256("${path.module}/../node_modules_layer.zip")
 }
-
 
 resource "aws_lambda_permission" "api_gw" {
   statement_id  = "AllowExecutionFromAPIGateway"
@@ -24,7 +23,7 @@ resource "aws_lambda_function" "app" {
   memory_size      = 1024
   role             = aws_iam_role.lambda_exec.arn
   timeout          = 30
-  # зададим перенные окружения, указав доступ к базе
+  # set env variable with access to DB
   environment {
     variables = {
       NODE_ENV = "production"
